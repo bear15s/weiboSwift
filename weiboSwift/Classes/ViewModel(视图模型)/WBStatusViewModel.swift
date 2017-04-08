@@ -104,7 +104,7 @@ class WBStatusViewModel: NSObject {
 
         }
         
-        if let vip = statusModel?.user?.verified_type{
+        if let vip = statusModel?.retweeted_status?.user?.verified_type{
             //用户vip的信息: 0代表达人, 2, 3, 5代表企业达人, 220代表草根达人
             switch vip {
             case 0:
@@ -126,6 +126,11 @@ class WBStatusViewModel: NSObject {
         if let vipLv = statusModel?.user?.mbrank {
             let image = UIImage(named: "common_icon_membership_level\(vipLv)")
             vipLevelImage = image
+        }
+        
+        if let vipLv = statusModel?.retweeted_status?.user?.mbrank {
+            let image = UIImage(named: "common_icon_membership_level\(vipLv)")
+            retweetedVipLevelImage = image
         }
     }
     

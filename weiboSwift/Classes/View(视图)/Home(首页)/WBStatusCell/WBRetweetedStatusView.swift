@@ -23,17 +23,17 @@ class WBRetweetedStatusView: UIView {
                 })
             }
             //用户昵称
-            userNameLabel.text = statusViewModel?.statusModel?.user?.screen_name
+            userNameLabel.text = statusViewModel?.statusModel?.retweeted_status?.user?.screen_name
             //发表时间
-            createTimeLabel.text = statusViewModel?.createTimeString
+            createTimeLabel.text = statusViewModel?.retweetedCreateTimeString
             //皇冠等级
-            vipLevelImageView.image = statusViewModel?.vipLevelImage
+            vipLevelImageView.image = statusViewModel?.retweetedVipLevelImage
             //达人图标
-            vipIcon.image = statusViewModel?.vipIconImage
+            vipIcon.image = statusViewModel?.retweetedVipIconImage
             //发布来源
-            sourceLabel.text = statusViewModel?.sourceString
+            sourceLabel.text = statusViewModel?.retweetedSourceString
             //微博正文
-            retweetedStatusLabel.text = statusViewModel?.statusModel?.text
+            retweetedStatusLabel.text = statusViewModel?.statusModel?.retweeted_status?.text
         }
     }
     
