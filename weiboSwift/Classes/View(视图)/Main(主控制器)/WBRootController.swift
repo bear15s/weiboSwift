@@ -60,17 +60,22 @@ extension WBRootController{
         self.view.backgroundColor = UIColor.rgbColor(r: 237, g: 237, b: 237)
         self.tableView.separatorStyle = .none
         self.tableView.backgroundColor = UIColor.groupTableViewBackground
-        if  !(WBUserAccount.shared.isLogin){
+        
+        setupTableView()
+        
+        print("\(WBUserAccount.shared.isLogin)")
+        if  WBUserAccount.shared.isLogin == false{
             setupVistorView()
             vistorView?.delegate = self
         }
-        setupTableView()
     }
     
     func setupVistorView(){
         vistorView = WBVisitorView(frame: self.view.bounds)
+//        UIApplication.shared.keyWindow?.addSubview(vistorView!)
         self.view.addSubview(vistorView!)
         vistorView?.visitorInfo = self.visitorDict
+//        self.view.bringSubview(toFront: vistorView!)
     }
     
     func setupTableView(){

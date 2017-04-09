@@ -18,10 +18,13 @@ class WBHomeController: WBRootController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(WBStatusCell.self, forCellReuseIdentifier: identifier)
-        setupRefreshControl()
-        if WBUserAccount.shared.isLogin {
+        if WBUserAccount.shared.isLogin == true{
+            setupRefreshControl()
             loadData()
         }
+//        else{
+//            self.view.sendSubview(toBack: self.tableView)
+//        }
     }
 
     override func didReceiveMemoryWarning() {

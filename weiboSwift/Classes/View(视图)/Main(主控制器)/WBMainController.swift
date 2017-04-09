@@ -41,6 +41,7 @@ extension WBMainController{
     func setupNewFeatureView(){
         
         let isNewFeature = Bundle.main.isNewFeature
+        
         if WBUserAccount.shared.isLogin == true {
             if isNewFeature {
                 
