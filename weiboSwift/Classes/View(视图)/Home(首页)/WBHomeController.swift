@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SDWebImage
 
 fileprivate let identifier = "homeCell"
 
@@ -55,21 +55,99 @@ class WBHomeController: WBRootController {
                     statusViewModelArr.append(viewModel)
                 }
                 
+                
                 if isPullDown == true {
                     
                     self.statusViewModelData = self.statusViewModelData + statusViewModelArr
-                    self.refreshHeader.endRefreshing()
                     
                 } else {
                     if responseObj.count > 0 {
                         statusViewModelArr.removeFirst()
                     }
                     self.statusViewModelData += statusViewModelArr
-                    self.refreshFooter.endRefreshing()
                 }
                 
-                self.tableView.reloadData()
+                
+                self.loadSingleData(viewModels: statusViewModelArr, callBack: { (isSuccess) in
+                    if isSuccess {
+                        self.tableView.reloadData()
+                        
+                        //判断是上拉, 还是下拉, 结束菊花转动的状态
+                        if isPullDown == true {
+                            self.refreshHeader.endRefreshing()
+                        } else {
+                            self.refreshFooter.endRefreshing()
+                        }
+                    }
+                })
             }
+        }
+    }
+    
+    ///下载单张图片
+    func loadSingleData(viewModels:[WBStatusViewModel],callBack: @escaping (Bool) -> ()){
+        
+        
+        let group = DispatchGroup()
+        for model in viewModels {
+            var url:URL?
+            if model.pic_urls?.count == 1{
+                url = URL(string:(model.pic_urls?[0].thumbnail_pic!)!)!
+                group.enter()
+                
+                SDWebImageManager.shared().downloadImage(with: url, options: [], progress: nil) { (singleImage, _, _, _, _) in
+                    
+                    if let singleImage = singleImage {
+                        
+                        var imageSize = singleImage.size
+                        
+                        //如果图片过宽
+                        let newWidth = screenWidth - 60
+                        if imageSize.width > screenWidth - 20 {
+                            //原高/原宽 = 新高/新宽
+                            imageSize.height = imageSize.height * newWidth / imageSize.width
+                            imageSize.width = newWidth
+                        }
+//                        print(imageSize)
+                        
+                        model.pictureViewSize = imageSize
+                        
+                        group.leave()
+                    }
+                }
+                
+            }
+            
+            if model.retweetedPic_urls?.count == 1{
+                url = URL(string:(model.retweetedPic_urls?[0].thumbnail_pic!)!)!
+                group.enter()
+                SDWebImageManager.shared().downloadImage(with: url, options: [], progress: nil) { (singleImage, _, _, _, _) in
+                    
+                    
+                    if let singleImage = singleImage {
+                        
+                        var imageSize = singleImage.size
+                        
+                        //如果图片过宽
+                        let newWidth = screenWidth - 60
+                        if imageSize.width > screenWidth - 20 {
+                            //原高/原宽 = 新高/新宽
+                            imageSize.height = imageSize.height * newWidth / imageSize.width
+                            imageSize.width = newWidth
+                        }
+//                        print(imageSize)
+                        
+                        model.retweetedPictureViewSize = imageSize
+                        
+                        group.leave()
+                    }
+                }
+                
+            }
+        }
+        
+        group.notify(queue: DispatchQueue.main){
+            callBack(true)
         }
     }
 }

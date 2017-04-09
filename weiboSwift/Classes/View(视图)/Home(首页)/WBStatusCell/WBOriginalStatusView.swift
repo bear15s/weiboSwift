@@ -13,6 +13,11 @@ class WBOriginalStatusView: UIView {
 
     var statusViewModel:WBStatusViewModel?{
         didSet{
+            
+            
+            pictureView.statusViewModel = statusViewModel
+            
+            
             //设置头像
             if let urlString = statusViewModel?.statusModel?.user?.avatar_large{
                 let url = URL(string: urlString)!

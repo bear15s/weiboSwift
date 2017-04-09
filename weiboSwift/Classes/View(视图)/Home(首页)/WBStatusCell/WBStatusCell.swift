@@ -19,8 +19,8 @@ class WBStatusCell: UITableViewCell {
             if let _ = statusViewModel?.statusModel?.retweeted_status{
                 retweetedView.isHidden = false
                 retweetedView.snp.updateConstraints { (make) in
-                    make.left.equalToSuperview().offset(10)
-                    make.right.equalToSuperview().offset(-10)
+                    make.left.equalToSuperview()
+                    make.right.equalToSuperview()
                     make.bottom.equalTo(toolBar.snp.top).offset(-10)
                     make.top.equalTo(originalView.snp.bottom)
                 }
@@ -68,8 +68,8 @@ extension WBStatusCell {
     
         
         retweetedView.snp.makeConstraints { (make) in
-            make.left.equalToSuperview().offset(10)
-            make.right.equalToSuperview().offset(-10)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
             make.bottom.equalTo(toolBar.snp.top).offset(-10)
             make.top.equalTo(originalView.snp.bottom)
         }
@@ -77,7 +77,7 @@ extension WBStatusCell {
         toolBar.snp.makeConstraints { (make) in
             make.height.equalTo(32)
             make.left.right.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-3)
             make.top.equalTo(retweetedView.snp.bottom)
             make.top.greaterThanOrEqualTo(originalView.snp.bottom)
         }

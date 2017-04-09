@@ -29,8 +29,9 @@ class WBStatusToolBar: UIView {
 
 extension WBStatusToolBar{
     func setupUI(){
-        self.layer.borderWidth = 0.5
-        self.layer.borderColor = UIColor.lightGray.cgColor
+//        self.layer.borderWidth = 0.5
+//        self.layer.borderColor = UIColor.lightGray.cgColor
+        self.backgroundColor = UIColor(patternImage: UIImage(named: "timeline_card_bottom_background")!)
         self.addSubview(retweetBtn)
         self.addSubview(commentBtn)
         self.addSubview(prizeBtn)

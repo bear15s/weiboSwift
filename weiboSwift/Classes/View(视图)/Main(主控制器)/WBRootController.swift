@@ -58,8 +58,8 @@ extension WBRootController{
     
     func setupUI(){
         self.view.backgroundColor = UIColor.rgbColor(r: 237, g: 237, b: 237)
-    
-        
+        self.tableView.separatorStyle = .none
+        self.tableView.backgroundColor = UIColor.groupTableViewBackground
         if  !(WBUserAccount.shared.isLogin){
             setupVistorView()
             vistorView?.delegate = self

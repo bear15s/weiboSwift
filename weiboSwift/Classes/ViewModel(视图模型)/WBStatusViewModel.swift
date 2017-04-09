@@ -20,7 +20,7 @@ class WBStatusViewModel: NSObject {
     ///达人图标
     var vipIconImage:UIImage?
     ///图片数组
-    var pic_urls:[WBPictureModel] = []
+    var pic_urls:[WBPictureModel]? = []
     ///图片视图大小
     var pictureViewSize:CGSize = CGSize.zero
     
@@ -35,7 +35,7 @@ class WBStatusViewModel: NSObject {
     ///达人图标
     var retweetedVipIconImage:UIImage?
     ///图片数组
-    var retweetedPic_urls:[WBPictureModel] = []
+    var retweetedPic_urls:[WBPictureModel]? = []
     ///图片视图大小
     var retweetedPictureViewSize:CGSize = CGSize.zero
     
@@ -59,7 +59,7 @@ class WBStatusViewModel: NSObject {
             createTimeString = Date.requiredTimeStr(sinaTime: timeString)
         }
         
-        if let timeString = statusModel?.created_at {
+        if let timeString = statusModel?.retweeted_status?.created_at {
             retweetedCreateTimeString = Date.requiredTimeStr(sinaTime: timeString)
         }
     }
@@ -67,21 +67,15 @@ class WBStatusViewModel: NSObject {
     ///处理发表来源
     func dealWithSource(){
         //"<a href=\"http://weibo.com/\" rel=\"nofollow\">iPhone 7 Plus</a>"
-        if let source = statusModel?.source {
-            
-            let startIndex = source.range(of: "\">")?.upperBound
-            let endIndex = source.range(of: "</a>")?.lowerBound
-            
-            let range = startIndex!..<endIndex!
+        if let source = statusModel?.source,let startIndex = source.range(of: "\">")?.upperBound,let endIndex = source.range(of: "</a>")?.lowerBound{
+   
+            let range = startIndex..<endIndex
             sourceString = source.substring(with:range)
         }
         
-        if let source = statusModel?.retweeted_status?.source {
+        if let source = statusModel?.retweeted_status?.source,let startIndex = source.range(of: "\">")?.upperBound,let endIndex = source.range(of: "</a>")?.lowerBound{
             
-            let startIndex = source.range(of: "\">")?.upperBound
-            let endIndex = source.range(of: "</a>")?.lowerBound
-            
-            let range = startIndex!..<endIndex!
+            let range = startIndex..<endIndex
             retweetedSourceString = source.substring(with:range)
         }
     }
@@ -136,40 +130,36 @@ class WBStatusViewModel: NSObject {
     
     ///给图片数组赋值
     func setPicUrlsArray(){
-        if let originalArr = statusModel?.pic_urls {
-            self.pic_urls = originalArr
+        //原创有配图, 转发没有配图
+        if let count = statusModel?.pic_urls?.count, count > 0 {
+            pic_urls = statusModel?.pic_urls
+            return
         }
         
-        if let retweetedArr = statusModel?.retweeted_status?.pic_urls {
-            self.pic_urls = retweetedArr
+        //如果原创没有配图, 才判断转发是否有配图
+        if let count = statusModel?.retweeted_status?.pic_urls?.count, count > 0 {
+            retweetedPic_urls = statusModel?.retweeted_status?.pic_urls
         }
     }
     
     ///处理图片
     func calculatePictureViewSize(){
-        let imageWH:CGFloat = CGFloat((screenWidth - 20.0)) / 3.0
+//        let imageWH:CGFloat = CGFloat((screenWidth - 60.0)) / 3.0
         //原创微博
-        if let originPictures = statusModel?.pic_urls {
-            let count = originPictures.count
-            if  count > 0 {
-                
-                let row = (count - 1) / 3 + 1
-                let pictureViewWidth = screenWidth - 20
-                let pictureViewHeigt = CGFloat(row) * imageWH + 20
-                self.pictureViewSize = CGSize(width: pictureViewWidth, height: pictureViewHeigt)
-            }
+        //1. 根据图片的张数, 确定配图的高度
+        //图片的宽度
+        let imageWH = (screenWidth-40)/3
+        
+        //图片的行数
+        if let count = pic_urls?.count, count > 0 {
+            let rows = (count - 1)/3 + 1 //分页算法
+            self.pictureViewSize = CGSize(width: screenWidth-20, height: CGFloat(rows)*imageWH + CGFloat(rows-1)*10)
         }
         
         //转发微博
-        if let retweetedPictures = statusModel?.retweeted_status?.pic_urls {
-            let count = retweetedPictures.count
-            if  count > 0 {
-                
-                let row = (count - 1) / 3 + 1
-                let pictureViewWidth = screenWidth - 20
-                let pictureViewHeigt = CGFloat(row) * imageWH + 20
-                self.pictureViewSize = CGSize(width: pictureViewWidth, height: pictureViewHeigt)
-            }
+        if  let count = statusModel?.retweeted_status?.pic_urls?.count, count > 0 {
+            let rows = (count - 1)/3 + 1 //分页算法
+            self.retweetedPictureViewSize = CGSize(width: screenWidth-20, height: CGFloat(rows)*imageWH + CGFloat(rows-1)*10)
         }
     }
 }

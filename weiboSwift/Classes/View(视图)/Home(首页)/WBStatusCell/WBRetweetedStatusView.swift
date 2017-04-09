@@ -14,16 +14,30 @@ class WBRetweetedStatusView: UIView {
     var statusViewModel:WBStatusViewModel?{
         didSet{
             //设置头像
-            if let urlString = statusViewModel?.statusModel?.user?.avatar_large{
-                let url = URL(string: urlString)!
-                SDWebImageManager.shared().downloadImage(with: url, options: [], progress: nil, completed: { (image, _, _, _, _) in
-                    image?.createCircleImage(color: UIColor(white: 0.9, alpha: 1),size: CGSize(width: 32, height: 32), callBack: { (circleImage) in
-                        self.iconView.image = circleImage
-                    })
-                })
+            pictureView.statusViewModel = statusViewModel
+            
+            if let _ = statusViewModel?.retweetedPic_urls{
+                
+                pictureView.snp.updateConstraints { (make) in
+                    make.top.equalTo(retweetedStatusLabel.snp.bottom).offset(10)
+                    make.left.equalToSuperview().offset(10)
+                    make.bottom.equalToSuperview().offset(-10)
+                    make.size.equalTo((statusViewModel?.retweetedPictureViewSize)!)
+                }
             }
+            else {
+                pictureView.snp.updateConstraints { (make) in
+                    make.top.equalTo(retweetedStatusLabel.snp.bottom)
+                    make.left.equalToSuperview().offset(10)
+                    make.bottom.equalToSuperview().offset(-10)
+                    make.size.equalTo(CGSize.zero)
+                }
+            }
+            
             //用户昵称
-            userNameLabel.text = statusViewModel?.statusModel?.retweeted_status?.user?.screen_name
+            if let name = statusViewModel?.statusModel?.retweeted_status?.user?.screen_name {
+                userNameLabel.text = "@" + name
+            }
             //发表时间
             createTimeLabel.text = statusViewModel?.retweetedCreateTimeString
             //皇冠等级
@@ -81,6 +95,7 @@ extension WBRetweetedStatusView{
         self.addSubview(pictureView)
         
         //头像
+        iconView.isHidden = true
         iconView.snp.makeConstraints { (make) in
             make.left.equalToSuperview().offset(10)
             make.top.equalToSuperview().offset(10)
@@ -88,6 +103,7 @@ extension WBRetweetedStatusView{
         }
         
         //vip图标
+        vipIcon.isHidden = true
         vipIcon.snp.makeConstraints { (make) in
             make.left.equalTo(iconView.snp.right).offset(-12)
             make.top.equalTo(iconView.snp.bottom).offset(-12)
@@ -128,7 +144,7 @@ extension WBRetweetedStatusView{
         //多图
         pictureView.snp.makeConstraints { (make) in
             make.top.equalTo(retweetedStatusLabel.snp.bottom).offset(10)
-            make.height.equalTo(200)
+            make.size.equalTo(CGSize.zero)
             make.left.equalToSuperview().offset(10)
             make.right.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-10)

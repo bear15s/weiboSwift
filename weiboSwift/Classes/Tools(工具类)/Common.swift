@@ -12,8 +12,8 @@ import UIKit
 let appKey = "3073454274"
 let appSecrect = "b42fde04ec9fa643ffa527a20b2a30b7"
 let redirectURI = "http://www.baidu.com"
-let wbuserName = ""
-let wbPassword = ""
+let wbuserName = "bear15s@126.com"
+let wbPassword = "aimerchelly0211"
 
 
 //MASK: - bounds相关
